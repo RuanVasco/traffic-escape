@@ -36,6 +36,9 @@ traffic_escape/
 
 - Code, identifiers, docstrings and UI strings are in English.
 - Comments only where the intent is not obvious from the code.
+- No emojis anywhere: code, UI, docs or commit messages. When an icon is needed,
+  use an icon library or a drawn shape instead.
+- Do not use the em dash character. Prefer a comma, a colon or two sentences.
 - Follow SOLID: one responsibility per module, depend on the abstractions in
   `traffic_escape/interfaces.py`, extend behaviour by adding classes instead of
   editing existing branches.
