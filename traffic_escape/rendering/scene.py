@@ -24,8 +24,7 @@ class SceneRenderer:
             self._frame.blit(prop.image, (prop.x, prop.y))
         for car in world.traffic:
             car.draw(self._frame)
-        if not world.player_destroyed:
-            world.player.draw(self._frame)
+        world.player.draw(self._frame)
         for explosion in world.explosions:
             explosion.draw(self._frame)
 

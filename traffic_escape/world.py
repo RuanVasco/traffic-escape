@@ -60,7 +60,6 @@ class RaceWorld:
         self.roadside = Roadside(self._scenery, self._rng)
         self.score = Score()
         self.road_speed = ROAD_SPEED_START
-        self.player_destroyed = False
         self.flash_frames = 0
         self.shake_frames = 0
         for index in range(MIN_TRAFFIC_CARS):
@@ -139,6 +138,6 @@ class RaceWorld:
         self.explosions.add(Explosion(frames, impact))
         self.explosions.add(Explosion(frames, self.player.rect.center, ticks_per_frame=4))
         self._audio.play(Sound.CRASH)
-        self.player_destroyed = True
+        self.player.wreck()
         self.flash_frames = CRASH_FLASH_FRAMES
         self.shake_frames = CRASH_SHAKE_FRAMES

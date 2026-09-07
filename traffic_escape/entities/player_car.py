@@ -14,6 +14,7 @@ TILT_SMOOTHING = 0.25
 TILT_THRESHOLD = 0.4
 ENGINE_SHAKE = 1.2
 ENGINE_SHAKE_RATE = 0.25
+BURNT_TINT = (70, 66, 66, 255)
 
 
 class PlayerCar(Vehicle):
@@ -43,6 +44,14 @@ class PlayerCar(Vehicle):
             if abs(self._tilt) > TILT_THRESHOLD
             else self._base_image
         )
+
+    def wreck(self) -> None:
+        burnt = self._base_image.copy()
+        burnt.fill(BURNT_TINT, special_flags=pygame.BLEND_RGBA_MULT)
+        self._base_image = burnt
+        self.image = burnt
+        self._tilt = 0.0
+        self._bounce = 0.0
 
     def draw(self, surface: pygame.Surface) -> None:
         position = self.image.get_rect(center=(self.rect.centerx, self.rect.centery + self._bounce))
