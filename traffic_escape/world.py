@@ -24,6 +24,7 @@ from .entities.road import Road
 from .entities.roadside import Roadside
 from .entities.traffic_car import TrafficCar
 from .interfaces import AudioPlayer, HighScoreRepository, Sound
+from .systems.car_following import CarFollowing
 from .systems.collision import CollisionDetector
 from .systems.scoring import Score
 from .systems.spawner import TrafficSpawner
@@ -48,6 +49,7 @@ class RaceWorld:
         self._high_scores = high_scores
         self._rng = rng or random.Random()
         self._spawner = TrafficSpawner(self._rng)
+        self._car_following = CarFollowing()
         self._collisions = CollisionDetector()
         self.high_score = high_scores.load()
         self.reset()
@@ -88,6 +90,7 @@ class RaceWorld:
 
         self.player.update()
         self.traffic.update(self.road_speed)
+        self._car_following.apply(self.traffic)
         self.road.update(self.road_speed)
         self.roadside.update(self.road_speed)
         self._recycle_traffic()
@@ -104,6 +107,7 @@ class RaceWorld:
         self.road_speed = max(0.0, self.road_speed - CRASH_BRAKE * delta)
         self.explosions.update()
         self.traffic.update(self.road_speed)
+        self._car_following.apply(self.traffic)
         self.road.update(self.road_speed)
         self.roadside.update(self.road_speed)
         self.flash_frames = max(0, self.flash_frames - 1)
