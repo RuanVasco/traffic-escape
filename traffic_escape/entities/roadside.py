@@ -10,6 +10,8 @@ from ..config import PROP_COUNT, PROP_SPACING, ROAD_LEFT, ROAD_RIGHT, SCREEN_HEI
 
 SIGN_CHANCE = 0.35
 PARALLAX = 1.05
+MIN_GAP = 90
+MAX_SHIFTS = 5
 
 
 @dataclass
@@ -30,7 +32,20 @@ class Roadside:
             prop.y += road_speed * PARALLAX
             if prop.y > SCREEN_HEIGHT + 40:
                 fresh = self._spawn(-self._rng.randint(60, 220))
+                for _ in range(MAX_SHIFTS):
+                    if not self._is_crowded(fresh, prop):
+                        break
+                    fresh.y -= MIN_GAP
                 prop.image, prop.x, prop.y = fresh.image, fresh.x, fresh.y
+
+    def _is_crowded(self, candidate: Prop, ignored: Prop) -> bool:
+        for prop in self.props:
+            if prop is ignored:
+                continue
+            same_side = (prop.x < ROAD_LEFT) == (candidate.x < ROAD_LEFT)
+            if same_side and abs(prop.y - candidate.y) < MIN_GAP:
+                return True
+        return False
 
     def _spawn(self, y: float) -> Prop:
         on_left = self._rng.random() < 0.5
