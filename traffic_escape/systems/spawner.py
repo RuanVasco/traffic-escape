@@ -12,6 +12,7 @@ GAP_PER_LEVEL = 12
 MIN_GAP = 150
 LOOKBACK = 240
 LOOKAHEAD = 120
+FALLBACK_GAP = 60
 
 
 class TrafficSpawner:
@@ -29,7 +30,14 @@ class TrafficSpawner:
             if self._is_free(lane, y, neighbours):
                 car.place(lane, y)
                 return
-        car.place(self._rng.randrange(LANE_COUNT), -self._rng.randint(200, 500))
+        lane = self._rng.randrange(LANE_COUNT)
+        car.place(lane, self._above_everything(lane, neighbours))
+
+    @staticmethod
+    def _above_everything(lane: int, neighbours: Iterable[TrafficCar]) -> int:
+        """Last resort: park the car beyond the highest vehicle of the lane."""
+        tops = [other.rect.top for other in neighbours if other.lane == lane]
+        return min(tops, default=0) - FALLBACK_GAP
 
     @staticmethod
     def _is_free(lane: int, y: int, neighbours: Iterable[TrafficCar]) -> bool:
